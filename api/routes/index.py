@@ -18,8 +18,7 @@ async def index(session: Session = Depends(db.session),):
     ELB 상태 체크용 API
     :return:
     """
-    
-    Client().create(session, auto_commit=True, client_name="홍길동", rank_id=1, client_serial=2)
+    Client().create(session, auto_commit=True, client_name="홍길동2", rank_id=1, client_serial=3, hospital_id=1)
     
     current_time = datetime.utcnow()
     return Response(f"Notification API (UTC: {current_time.strftime('%Y.%m.%d %H:%M:%S')})")
