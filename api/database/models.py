@@ -14,9 +14,9 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 
 from api.database.conn import Base
-from api.database.schemabase import BaseMixin
+from api.database.sqlbase import BaseMixin
 
-# table create => base.creat_all(engine)
+# table create => Base.metadata.create_all(bind=engine)
 # table 생성이 아니라면 relationship 필드는 정의할 필요없음
 class Client(Base, BaseMixin):
     __tablename__ = "client"

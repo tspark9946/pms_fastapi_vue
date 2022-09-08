@@ -12,6 +12,7 @@ sqlalchemy = "*"
 pymysql = "*"
 starlette = "*"
 win32-setctime = "*"
+pydantic = "*"
 
 [dev-packages]
 
