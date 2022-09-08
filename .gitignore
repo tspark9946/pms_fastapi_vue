@@ -1,4 +1,6 @@
 __pycache__
 .env
 .vscode
-logs
+logs/
+node_modules/
+dist/
