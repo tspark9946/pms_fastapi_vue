@@ -48,7 +48,8 @@ def create_app():
 #    app.add_middleware(middleware_class=BaseHTTPMiddleware, dispatch=access_control)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=conf().ALLOW_SITE,
+        allow_origins=["http://localhost:3000"],
+        # allow_origins=conf().ALLOW_SITE,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

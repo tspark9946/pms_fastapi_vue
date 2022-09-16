@@ -1,73 +1,64 @@
 <template>
-  <v-form ref="form" v-model="valid" lazy-validation>
-    <v-text-field
-      v-model="name"
-      :counter="10"
-      :rules="nameRules"
-      label="Name"
-      required
-    ></v-text-field>
+  <v-form ref="form">
+    <v-text-field></v-text-field>
+    <v-text-field label="Name"></v-text-field>
+    <v-text-field label="E-mail"></v-text-field>
+    <v-text-field label="Password"></v-text-field>
 
-    <v-text-field
-      v-model="email"
-      :rules="emailRules"
-      label="E-mail"
-      required
-    ></v-text-field>
-
-    <v-select
-      v-model="select"
-      :items="items"
-      :rules="[(v) => !!v || 'Item is required']"
-      label="Item"
-      required
-    ></v-select>
-
-    <v-checkbox
-      v-model="checkbox"
-      :rules="[(v) => !!v || 'You must agree to continue!']"
-      label="Do you agree?"
-      required
-    ></v-checkbox>
-
-    <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">
-      Validate
+    <v-btn color="success" @click="submitUser({ id, name, email, password })">
+      {{ id ? "Edit" : "Submit" }}
     </v-btn>
-
-    <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
-
-    <v-btn color="warning" @click="resetValidation"> Reset Validation </v-btn>
   </v-form>
 </template>
 
 <script>
 export default {
-  data: () => ({
-    valid: true,
-    name: "",
-    nameRules: [
-      (v) => !!v || "Name is required",
-      (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
-    ],
-    email: "",
-    emailRules: [
-      (v) => !!v || "E-mail is required",
-      (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
-    ],
-    select: null,
-    items: ["Item 1", "Item 2", "Item 3", "Item 4"],
-    checkbox: false,
-  }),
+  computed: {
+    id: {
+      get() {
+        return this.$store.state.user.id;
+      },
+      set() {
+        this.$store.commit("user/storeId", value);
+      },
+    },
+    name: {
+      get() {
+        return this.$store.state.user.name;
+      },
+      set() {
+        this.$store.commit("user/storeName", value);
+      },
+    },
+    email: {
+      get() {
+        return this.$store.state.user.email;
+      },
+      set() {
+        this.$store.commit("user/storeEmail", value);
+      },
+    },
+    password: {
+      get() {
+        return this.$store.state.user.password;
+      },
+      set() {
+        this.$store.commit("user/storePassword", value);
+      },
+    },
+  },
 
   methods: {
-    validate() {
-      this.$refs.form.validate();
+    async submitUser(user) {
+      this.$axios.get("http://localhost:8000").then((res) => {
+        console.log(res.data);
+      });
     },
-    reset() {
-      this.$refs.form.reset();
-    },
-    resetValidation() {
-      this.$refs.form.resetValidation();
+    resetForm(user) {
+      this.$store.commit("user/storeId", user.id);
+      this.$store.commit("user/storeName", user.name);
+      this.$store.commit("user/storeEmail", user.email);
+      this.$store.commit("user/storePassword", user.password);
     },
   },
 };

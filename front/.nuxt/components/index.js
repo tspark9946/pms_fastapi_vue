@@ -1,5 +1,4 @@
 export { default as Form } from '../../components/Form.vue'
-export { default as Table } from '../../components/Table.vue'
 
 // nuxt/nuxt.js#8607
 function wrapFunctional(options) {
