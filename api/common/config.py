@@ -28,7 +28,8 @@ PORT = environ.get("PORT")
 WORKERS = environ.get("WORKERS")
 RELOAD = environ.get("RELOAD")
 ORIGINS = environ.get("ORIGINS")
-DB_URL = environ.get("DB_URL", "mysql+pymysql://pmsuser:%s@146.56.163.50/testdb?charset=utf8mb4" % quote('starP@9214'))
+#DB_URL = environ.get("DB_URL", "mysql+pymysql://pmsuser:%s@146.56.163.50/testdb?charset=utf8mb4" % quote('starP@9214'))
+DB_URL = environ.get("DB_URL")
 LOGDIR = "logs"
 LOGFILE = "moviestar.log"
 BIND = "0.0.0.0"

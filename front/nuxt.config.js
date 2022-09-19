@@ -3,7 +3,8 @@ export default {
     "@nuxtjs/vuetify"
   ],
   modules: [
-    "@nuxtjs/axios"
+    "@nuxtjs/axios",
+    "nuxt-logger-winston",
   ],
   components: true
 }

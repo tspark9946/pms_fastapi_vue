@@ -9,7 +9,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
-from api.common.config import conf, PORT, BIND, WORKERS, RELOAD
+from api.common.config import conf
 from api.database.conn import db
 from api.routes import index, client
 
@@ -20,9 +20,6 @@ def create_app():
     :return:
     """
     c = conf()
-    # test code
-    print(c.DB_URL)
-    # ----------------
     app = FastAPI()
     conf_dict = asdict(c)
 
@@ -38,6 +35,11 @@ def create_app():
                format="<green>{time:YYYYMMDD_HH:mm:ss}</green> | {level} | <level>{message}</level>",
                level="ERROR"
                )
+    """
+    # logger 사용법(각 파일에 임포트만 하고 전역으로 아래처럼 사용하면 됨)
+    logger.info("add_middleware")
+    logger.debug("db.init_app(app, **conf_dict)")
+    """
 
     db.init_app(app, **conf_dict)
     # 데이터 베이스 이니셜라이즈
@@ -48,8 +50,8 @@ def create_app():
 #    app.add_middleware(middleware_class=BaseHTTPMiddleware, dispatch=access_control)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:3000"],
-        # allow_origins=conf().ALLOW_SITE,
+        # allow_origins=["http://localhost:3000"],
+        allow_origins=conf().ALLOW_SITE,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -70,14 +72,4 @@ def create_app():
 
 
 app = create_app()
-
-if __name__ == "__main__":
-    uvicorn.run(
-        "api:app",
-        host=BIND,
-        port=int(PORT),
-        reload=RELOAD,
-        debug=RELOAD,
-        workers=int(WORKERS),
-    )
 

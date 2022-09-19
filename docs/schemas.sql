@@ -75,9 +75,9 @@ CREATE TABLE `sign` (
   `sign_resign` tinyint(4) DEFAULT 0,
   `sign_resigndate` date DEFAULT NULL,
   `created_by` int(10) unsigned NULL DEFAULT NULL,
-  `creation_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified_by` int(10) unsigned NULL DEFAULT NULL,
-  `modified_datetime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `modified_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `HOSPITAL_ID` int(10) unsigned NOT NULL,
   `order_idx` int(11) DEFAULT NULL,
   `advice_token` varchar(45) DEFAULT NULL,
@@ -99,7 +99,7 @@ CREATE TABLE `client` (
   `client_etc` varchar(127) DEFAULT NULL COMMENT 'Additional notes',
   `client_alert` tinyint(4) DEFAULT NULL COMMENT 'Determine showing client_memo2 with popup or not. 0 : not showing, 1 : Popup only, 2 : Popup with sound',
   `rank_id` int(10) unsigned DEFAULT NULL,
-  `client_firstdate` date DEFAULT NULL COMMENT 'first visit',
+  `client_firstdate` date DEFAULT CURRENT_TIMESTAMP COMMENT 'first visit',
   `client_debt` decimal(10,2) DEFAULT 0,
   `client_resmoney` decimal(10,2) DEFAULT 0,
   `client_point` decimal(10,2) DEFAULT 0,
@@ -135,3 +135,40 @@ CREATE TABLE `client` (
 	ON DELETE SET NULL
 	ON UPDATE CASCADE
 )
+
+CREATE TABLE `tel` (
+  `tel_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `client_id` int(10) unsigned NOT NULL,
+  `tel_default` tinyint(4) DEFAULT NULL COMMENT 'Main number or not',
+  `tel_name` varchar(64) DEFAULT NULL COMMENT 'Contact name',
+  `tel_type` tinyint(4) NOT NULL COMMENT 'Contact type\n0 : Tel\n1 : Mobile\n2 : E-Mail',
+  `tel_number` varchar(32) DEFAULT NULL COMMENT 'Contact',
+  `tel_allow_phone` tinyint(4) DEFAULT '0' COMMENT 'Allow calls',
+  `tel_allow_sms` tinyint(4) DEFAULT '0' COMMENT 'Allow messages',
+  `tel_allow_email` tinyint(4) DEFAULT '0' COMMENT 'Allow e-mail',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_sign_id` int(10) unsigned NULL,
+  `created_sign_name` varchar(32) DEFAULT NULL,
+  `modified_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `modified_sign_id` int(10) unsigned NULL,
+  `modified_sign_name` varchar(32) DEFAULT NULL,
+  `HOSPITAL_ID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`tel_id`,`client_id`),
+  UNIQUE KEY `tel_id_UNIQUE` (`tel_id`),
+  KEY `fk_tel_client_id_idx` (`client_id`),
+  KEY `fk_tel_created_sign_id_idx` (`created_sign_id`),
+  KEY `fk_tel_modified_sign_id_idx` (`modified_sign_id`),
+  KEY `fk_tel_HOSPITAL_ID_idx` (`HOSPITAL_ID`),
+  CONSTRAINT `fk_tel_HOSPITAL_ID` FOREIGN KEY (`HOSPITAL_ID`) REFERENCES `HOSPITAL` (`HOSPITAL_ID`)
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tel_client_id` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
+  CONSTRAINT `fk_tel_created_sign_id` FOREIGN KEY (`created_sign_id`) REFERENCES `sign` (`sign_id`)
+	ON DELETE SET NULL
+	ON UPDATE CASCADE,
+  CONSTRAINT `fk_tel_modified_sign_id` FOREIGN KEY (`modified_sign_id`) REFERENCES `sign` (`sign_id`)
+	ON DELETE SET NULL
+	ON UPDATE CASCADE
+) 

@@ -91,6 +91,7 @@ class BaseMixin:
             elif len(key) == 2 and key[1] == 'lt': cond.append((col < val))
             elif len(key) == 2 and key[1] == 'lte': cond.append((col <= val))
             elif len(key) == 2 and key[1] == 'in': cond.append((col.in_(val)))
+			# ex) 'id__lte = 3 id <= 3, id__in = [1,2,3] 
         obj = cls()
         if session:
             obj._session = session
