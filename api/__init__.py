@@ -11,7 +11,7 @@ from loguru import logger
 
 from api.common.config import conf
 from api.database.conn import db
-from api.routes import index, client
+from api.routes import index, client, auth
 
 
 def create_app():
@@ -61,7 +61,7 @@ def create_app():
     # 라우터 정의
     app.include_router(index.router)
     app.include_router(client.router)
-#    app.include_router(auth.router, tags=["Authentication"], prefix="/api")
+    app.include_router(auth.router)
 #    if conf().DEBUG:
 #        app.include_router(services.router, tags=["Services"], prefix="/api", dependencies=[Depends(API_KEY_HEADER)])
 #    else:

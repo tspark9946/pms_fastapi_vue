@@ -13,6 +13,9 @@ pymysql = "*"
 starlette = "*"
 win32-setctime = "*"
 pydantic = "*"
+passlib = "*"
+bcrypt = "*"
+pyjwt = "*"
 
 [dev-packages]
 

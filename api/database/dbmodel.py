@@ -34,12 +34,13 @@ class Hospital(Base, BaseMixin):
     hospital_address2 = Column(String(127))
 
 
-class Sign(Base, BaseMixin):
+class User(Base, BaseMixin):
     __tablename__ = "sign"
     sign_id = Column(Integer, primary_key=True, index=True)
     sign_name = Column(String(32))
     sign_email = Column(String(64))
     sign_password = Column(String(255))
+    sign_cellphone = Column(String(50))
     hospital_id = Column(Integer, ForeignKey('HOSPITAL.hospital_id'))
     hospital = relationship("Hospital", backref="sign")
 

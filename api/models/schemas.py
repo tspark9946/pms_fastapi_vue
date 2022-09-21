@@ -15,14 +15,14 @@ class Blog(BaseModel):
     published_at: Optional[bool]
 
 
-class RankModel(BaseModel):
+class Rank(BaseModel):
     rank_id: int
     rank_name: str
     
     class Config:
         orm_mode = True
 
-class TelModel(BaseModel):
+class Tel(BaseModel):
     tel_id: int
     tel_number: str
     tel_name: str
@@ -31,13 +31,36 @@ class TelModel(BaseModel):
         orm_mode = True
 
 
-class ClientModel(BaseModel):
+class Client(BaseModel):
     client_id: int
     client_serial: int
     client_name: str
     client_zip: str = None
-    tellist : List[TelModel] = []
-    rank: RankModel
+    tellist : List[Tel] = []
+    rank: Rank
+
+    class Config:
+        orm_mode = True
+
+
+class User(BaseModel):
+    name:str
+    email:str
+    password:str
+
+class Login(BaseModel):
+    name:str
+    email:str
+    password:str
+
+class Token(BaseModel):
+    Authorization: str = None
+
+class UserToken(BaseModel):
+    sign_id: int
+    sign_email: str = None
+    sign_name: str = None
+    sign_cellphone: str = None
 
     class Config:
         orm_mode = True

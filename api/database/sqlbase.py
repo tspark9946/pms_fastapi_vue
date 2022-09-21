@@ -13,7 +13,16 @@ from sqlalchemy.orm import Session
 
 from api.database.conn import db
 
+"""_summary_
 
+ex : client_info = dbmodel.Client.get(client_id=client_id)  // 1 row만 반환
+    client_info = return dbmodel.Client.filter(client_id=client_id).order_by("-client_name").all() // order_by '-' desc
+    Exception: _description_
+    Exception: _description_
+
+Returns:
+    _type_: _description_
+"""
 class BaseMixin:
     #id = Column(Integer, primary_key=True, index=True)
     created_at = Column(DateTime, nullable=False, default=func.utc_timestamp())
