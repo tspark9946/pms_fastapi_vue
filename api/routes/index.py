@@ -1,9 +1,12 @@
 from datetime import datetime
+from symbol import try_stmt
 from typing import Optional
 from unicodedata import name
+from loguru import logger
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import Response
+from fastapi.requests import Request
 from inspect import currentframe as frame
 
 from sqlalchemy.orm import Session
@@ -14,7 +17,7 @@ router = APIRouter()
 
 
 @router.get("/")
-def index():
+async def index():
     """
     ELB 상태 체크용 API
     :return:
@@ -24,20 +27,20 @@ def index():
     current_time = datetime.utcnow()
     return Response(f"Notification API (UTC: {current_time.strftime('%Y.%m.%d %H:%M:%S')})")
 
-# /blog?limit=50&published=true
-@router.get('/blog')
-def start(limit: int = 10, published: bool = True, sort: Optional[str] = None):
-    if published:
-        return {'data': f'{limit} published blogs from db'}
-    else:
-        return {'data': f'{limit} unpublished blogs from db'}
+@router.get("/test")
+async def test(request: Request):
+    """
+    ELB 상태 체크용 API
+    :return:
+    """
+    print("state.user", request.state.user)
+    logger.debug("test router start")
+    try:
+        a = 1/0
+    except Exception as e:
+        request.state.inspect = frame()
+        raise e
+    
+    current_time = datetime.utcnow()
+    return Response(f"Notification API (UTC: {current_time.strftime('%Y.%m.%d %H:%M:%S')})")
 
-
-@router.get('/blog/{id}')
-def start(id: int):
-    return {'data': f'{id} blogs from db'}
-
-#request model 사용예제
-@router.post('/blog')
-def create_blog(request: schemas.Blog):
-    return {'data': f'blog created {request.title}'}

@@ -43,6 +43,26 @@ class User(Base, BaseMixin):
     sign_cellphone = Column(String(50))
     hospital_id = Column(Integer, ForeignKey('HOSPITAL.hospital_id'))
     hospital = relationship("Hospital", backref="sign")
+    keys = relationship("ApiKeys", back_populates="users")
+
+class ApiKeys(Base, BaseMixin):
+    __tablename__ = "apikeys"
+    apikeys_id = Column(Integer, primary_key=True, index=True)
+    access_key = Column(String(length=64), nullable=False, index=True)
+    secret_key = Column(String(length=64), nullable=False)
+    user_memo = Column(String(length=40), nullable=True)
+    status = Column(Enum("active", "stopped", "deleted"), default="active")
+    is_whitelisted = Column(Boolean, default=False)
+    sign_id = Column(Integer, ForeignKey("sign.sign_id"), nullable=False)
+    whitelist = relationship("ApiWhiteLists", backref="apikeys")
+    users = relationship("User", back_populates="keys")
+
+
+class ApiWhiteLists(Base, BaseMixin):
+    __tablename__ = "apiwhitelists"
+    apiwhitelists_id = Column(Integer, primary_key=True, index=True)
+    ip_addr = Column(String(length=64), nullable=False)
+    apikeys_id = Column(Integer, ForeignKey("apikeys.apikeys_id"), nullable=False)
 
 
 class Client(Base, BaseMixin):

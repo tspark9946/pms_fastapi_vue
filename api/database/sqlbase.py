@@ -135,7 +135,7 @@ class BaseMixin:
 
     def update(self, auto_commit: bool = False, **kwargs):
         qs = self._q.update(kwargs)
-        get_id = self.id
+        #get_id = self.id
         ret = None
 
         self._session.flush()

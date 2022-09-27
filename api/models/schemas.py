@@ -8,13 +8,6 @@ from pydantic import BaseModel
 from api.database.dbmodel import Rank
 
 
-#예제용 모델
-class Blog(BaseModel):
-    title: str
-    body: str
-    published_at: Optional[bool]
-
-
 class Rank(BaseModel):
     rank_id: int
     rank_name: str
@@ -44,14 +37,15 @@ class Client(BaseModel):
 
 
 class User(BaseModel):
-    name:str
-    email:str
-    password:str
+    sign_name:str
+    sign_email:str
+    sign_password:str
+    sign_cellphone: str
 
 class Login(BaseModel):
-    name:str
-    email:str
-    password:str
+    sign_email:str
+    sign_password:str
+
 
 class Token(BaseModel):
     Authorization: str = None
@@ -64,5 +58,35 @@ class UserToken(BaseModel):
 
     class Config:
         orm_mode = True
+
+class AddApiKey(BaseModel):
+    user_memo: str = None
+
+    class Config:
+        orm_mode = True
+
+
+class GetApiKeyList(AddApiKey):
+    apikeys_id: int = None
+    access_key: str = None
+    created_at: datetime = None
+
+
+class GetApiKeys(GetApiKeyList):
+    secret_key: str = None
+
+
+class CreateAPIWhiteLists(BaseModel):
+    ip_addr: str = None
+
+
+class GetAPIWhiteLists(CreateAPIWhiteLists):
+    apiwhitelists_id: int
+
+    class Config:
+        orm_mode = True
+
+class MessageOk(BaseModel):
+    message: str = Field(default="OK")
 
 

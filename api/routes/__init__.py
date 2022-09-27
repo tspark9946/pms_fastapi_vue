@@ -1,1 +1,1 @@
-__all__ = ['index', 'client']
+__all__ = ['index', 'client', 'auth', 'sign']

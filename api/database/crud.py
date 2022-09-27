@@ -14,6 +14,7 @@ def get_client(db: Session, client_id: int):
     # return dbmodel.Client.get(client_id=client_id)
     
 def create_user(db: Session, request: schemas.User):
-    hashedPassword = Hash.bcrypt(request.password)
-    new_user = dbmodel.User.create(db, auto_commit=True, sign_name=request.name, sign_password=hashedPassword, sign_email=request.email, hospital_id=1)
+    hashedPassword = Hash.bcrypt(request.sign_password)
+    new_user = dbmodel.User.create \
+        (db, auto_commit=True, sign_name=request.sign_name, sign_password=hashedPassword, sign_email=request.sign_email, sign_cellphone=request.sign_cellphone, hospital_id=1)
     return new_user

@@ -89,6 +89,38 @@ CREATE TABLE `sign` (
 	ON UPDATE NO ACTION
 )
 
+CREATE TABLE `apikeys` (
+  `apikeys_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `access_key` varchar(64) NOT NULL ,
+  `secret_key` varchar(64) NOT NULL ,
+  `user_memo` varchar(40) DEFAULT NULL,
+  `status` ENUM('active', 'stopped', 'deleted') DEFAULT 'active',
+  `is_whitelisted` int(1) DEFAULT '0' ,
+  `sign_id` int(10) unsigned NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`apikeys_id`),
+  UNIQUE KEY `apikeys_id_UNIQUE` (`apikeys_id`),
+  KEY `fk_apikeys_sign_id_idx` (`sign_id`),
+  CONSTRAINT `fk_apikeys_sign_id` FOREIGN KEY (`sign_id`) REFERENCES `sign` (`sign_id`)
+	ON DELETE SET NULL
+	ON UPDATE CASCADE,
+)
+
+CREATE TABLE `apiwhitelists` (
+  `apiwhitelists_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ip_addr` varchar(64) NOT NULL ,
+  `apikeys_id` int(10) unsigned NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`apiwhitelists_id`),
+  UNIQUE KEY `apiwhitelists_id_UNIQUE` (`apiwhitelists_id`),
+  KEY `fk_apiwhitelists_apikeys_id_idx` (`apikeys_id`),
+  CONSTRAINT `fk_apiwhitelists_apikeys_id` FOREIGN KEY (`apikeys_id`) REFERENCES `apikeys` (`apikeys_id`)
+	ON DELETE SET NULL
+	ON UPDATE CASCADE,
+)
+
 CREATE TABLE `client` (
   `client_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `client_serial` int(10) unsigned NOT NULL,

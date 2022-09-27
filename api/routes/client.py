@@ -1,5 +1,4 @@
 from datetime import datetime
-from sys import prefix
 from typing import List
 from loguru import logger
 
