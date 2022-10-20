@@ -1,4 +1,5 @@
 
+from email.policy import default
 from sqlalchemy import (
     Column,
     Integer,
@@ -20,8 +21,8 @@ from api.database.sqlbase import BaseMixin
 # table create => Base.metadata.create_all(bind=engine)
 
 # backref vs back_populates
-# backref : 테이블 한쪽에만 명시하면 됨. 자동으로 다른 테이블 내용을 채워주지않음
-# back_populate : 관계를 맺는 양쪽테이블에 다 명시해야 함. 자동으로 다른 테이블 내용을 채워줌
+# backref : 테이블 한쪽에만 명시하면 됨. 자동으로 관계된 테이블 내용을 채워주지않음
+# back_populate : 관계를 맺는 양쪽테이블에 다 명시해야 함. 자동으로 관계된 테이블 내용을 채워줌
 
 
 class Hospital(Base, BaseMixin):
@@ -41,6 +42,9 @@ class User(Base, BaseMixin):
     sign_email = Column(String(64))
     sign_password = Column(String(255))
     sign_cellphone = Column(String(50))
+    sign_license_number = Column(String)
+    sign_department = Column(String)
+    sign_jobtitle = Column(String)
     hospital_id = Column(Integer, ForeignKey('HOSPITAL.hospital_id'))
     hospital = relationship("Hospital", backref="sign")
     keys = relationship("ApiKeys", back_populates="users")
@@ -75,18 +79,18 @@ class Client(Base, BaseMixin):
     client_address2 = Column(String(127), nullable=True)
     client_email = Column(String(64), nullable=True)
     client_etc = Column(String(127), nullable=True)
-    client_alert = Column(Integer)
+    client_alert = Column(Integer, default=0)
     rank_id = Column(Integer, ForeignKey('rank.rank_id'))
     rank = relationship("Rank", back_populates="client")
-    client_firstdate = Column(Date)
-    client_debt = Column(DECIMAL(10, 2))
-    client_resmoney = Column(DECIMAL(10, 2))
-    client_point = Column(DECIMAL(10, 2))
+    client_firstdate = Column(Date, default=func.now())
+    client_debt = Column(DECIMAL(10, 2), default=0.0)
+    client_resmoney = Column(DECIMAL(10, 2), default=0.0)
+    client_point = Column(DECIMAL(10, 2), default=0.0)
     client_memo1 = Column(String)
     client_memo1_encoded = Column(String)
     client_memo2 = Column(String)
     client_memo2_encoded = Column(String)
-    client_state = Column(Integer)
+    client_state = Column(Integer, default=0)
     created_sign_id = Column(Integer)
     created_sign_name = Column(String)
     modified_sign_id = Column(Integer)
@@ -107,7 +111,6 @@ class Tel(Base, BaseMixin):
     __tablename__ = "tel"
     tel_id = Column(Integer, primary_key=True, index=True)
     client_id = Column(Integer, ForeignKey('client.client_id'))
-    client = relationship("Client", back_populates="tellist")
     tel_number = Column(String(length=32))
     tel_name = Column(String(length=64))
     tel_default = Column(Integer)
@@ -119,6 +122,7 @@ class Tel(Base, BaseMixin):
     created_sign_name = Column(String)
     modified_sign_id = Column(Integer)
     modified_sign_name = Column(String)
+    client = relationship("Client", back_populates="tellist")
     hospital_id = Column(Integer, ForeignKey('HOSPITAL.hospital_id'))
 
 

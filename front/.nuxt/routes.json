@@ -1,9 +1,20 @@
 [
   {
+    "name": "ClientView",
+    "path": "/ClientView",
+    "component": "/mnt/e/workspace/docker/www/pms/front/pages/ClientView.vue",
+    "chunkName": "pages/ClientView"
+  },
+  {
+    "name": "inspire",
+    "path": "/inspire",
+    "component": "/mnt/e/workspace/docker/www/pms/front/pages/inspire.vue",
+    "chunkName": "pages/inspire"
+  },
+  {
     "name": "index",
     "path": "/",
     "component": "/mnt/e/workspace/docker/www/pms/front/pages/index.vue",
-    "chunkName": "pages/index",
-    "_name": "_314ffe5c"
+    "chunkName": "pages/index"
   }
 ]

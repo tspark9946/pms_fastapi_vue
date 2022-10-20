@@ -50,8 +50,7 @@ class Config:
     DB_ECHO: bool = True
     DEBUG: bool = False
     TEST_MODE: bool = False
-    DB_URL: str = environ.get(
-        "DB_URL", "mysql+pymysql://pmsuser:%s@146.56.163.50/testdb?charset=utf8mb4" % quote('starP@9214'))
+    DB_URL: str = environ.get("DB_URL", "")
 
 
 @dataclass

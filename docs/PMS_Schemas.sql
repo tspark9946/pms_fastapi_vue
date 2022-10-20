@@ -39,6 +39,8 @@ CREATE TABLE `HOSPITAL` (
   `CREATION_DATETIME` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `MODIFIED_BY` int(10) unsigned DEFAULT NULL,
   `MODIFIED_DATETIME` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `CREATED_AT` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `MODIFIED_AT` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `HOSPITAL_DELETED` tinyint(1) DEFAULT '0' COMMENT '0: Normal; 1: Deleted',
   PRIMARY KEY (`HOSPITAL_ID`),
   UNIQUE KEY `HOSPITAL_ID_UNIQUE` (`HOSPITAL_ID`)
@@ -64,7 +66,6 @@ CREATE TABLE `sign` (
   `sign_name` varchar(32) DEFAULT NULL COMMENT 'nickname that used only in hospital (ex. Dr.Lee)',
   `sign_email` VARCHAR(64) COMMENT 'e-mail',
   `sign_password` varchar(255) COMMENT 'password',
-  `sign_password_type` int(1) DEFAULT '1' COMMENT '(Deprecated) Encrypted type of password - 0: AES , 1: SHA1',
   `sign_privileges` bigint unsigned NULL DEFAULT NULL COMMENT 'User Privileges',
   `sign_cellphone` varchar(50) DEFAULT NULL COMMENT 'User''s cellphones',
   `sign_license_number` varchar(255) DEFAULT NULL COMMENT '(Deprecated) User License Number',
@@ -87,7 +88,7 @@ CREATE TABLE `sign` (
   CONSTRAINT `fk_sign_HOSPITAL_ID` FOREIGN KEY (`HOSPITAL_ID`) REFERENCES `HOSPITAL` (`HOSPITAL_ID`)
 	ON DELETE NO ACTION
 	ON UPDATE NO ACTION
-)
+);
 
 CREATE TABLE `apikeys` (
   `apikeys_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -95,7 +96,7 @@ CREATE TABLE `apikeys` (
   `secret_key` varchar(64) NOT NULL ,
   `user_memo` varchar(40) DEFAULT NULL,
   `status` ENUM('active', 'stopped', 'deleted') DEFAULT 'active',
-  `is_whitelisted` int(1) DEFAULT '0' ,
+  `is_whitelisted` tinyint(4) DEFAULT '0' ,
   `sign_id` int(10) unsigned NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -104,8 +105,8 @@ CREATE TABLE `apikeys` (
   KEY `fk_apikeys_sign_id_idx` (`sign_id`),
   CONSTRAINT `fk_apikeys_sign_id` FOREIGN KEY (`sign_id`) REFERENCES `sign` (`sign_id`)
 	ON DELETE SET NULL
-	ON UPDATE CASCADE,
-)
+	ON UPDATE CASCADE
+);
 
 CREATE TABLE `apiwhitelists` (
   `apiwhitelists_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -117,9 +118,9 @@ CREATE TABLE `apiwhitelists` (
   UNIQUE KEY `apiwhitelists_id_UNIQUE` (`apiwhitelists_id`),
   KEY `fk_apiwhitelists_apikeys_id_idx` (`apikeys_id`),
   CONSTRAINT `fk_apiwhitelists_apikeys_id` FOREIGN KEY (`apikeys_id`) REFERENCES `apikeys` (`apikeys_id`)
-	ON DELETE SET NULL
-	ON UPDATE CASCADE,
-)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
+);
 
 CREATE TABLE `client` (
   `client_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -142,10 +143,10 @@ CREATE TABLE `client` (
   `client_memo2_encoded` text COMMENT 'memo that should not shown to client (Rich text)',
   `client_state` tinyint(1) DEFAULT 0 COMMENT '0: Normal, 1: Deleted',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_sign_id` int(10) unsigned NULL,
+  `created_sign_id` int(10) unsigned DEFAULT NULL,
   `created_sign_name` varchar(32) DEFAULT NULL,
   `modified_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `modified_sign_id` int(10) unsigned NULL,
+  `modified_sign_id` int(10) unsigned DEFAULT NULL,
   `modified_sign_name` varchar(32) DEFAULT NULL,
   `HOSPITAL_ID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`client_id`),
@@ -167,7 +168,7 @@ CREATE TABLE `client` (
   CONSTRAINT `fk_client_rank_id` FOREIGN KEY (`rank_id`) REFERENCES `rank` (`rank_id`)
 	ON DELETE SET NULL
 	ON UPDATE CASCADE
-)
+);
 
 CREATE TABLE `tel` (
   `tel_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -180,10 +181,10 @@ CREATE TABLE `tel` (
   `tel_allow_sms` tinyint(4) DEFAULT '0' COMMENT 'Allow messages',
   `tel_allow_email` tinyint(4) DEFAULT '0' COMMENT 'Allow e-mail',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_sign_id` int(10) unsigned NULL,
+  `created_sign_id` int(10) unsigned DEFAULT NULL,
   `created_sign_name` varchar(32) DEFAULT NULL,
   `modified_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `modified_sign_id` int(10) unsigned NULL,
+  `modified_sign_id` int(10) unsigned DEFAULT NULL,
   `modified_sign_name` varchar(32) DEFAULT NULL,
   `HOSPITAL_ID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`tel_id`,`client_id`),
@@ -204,4 +205,146 @@ CREATE TABLE `tel` (
   CONSTRAINT `fk_tel_modified_sign_id` FOREIGN KEY (`modified_sign_id`) REFERENCES `sign` (`sign_id`)
 	ON DELETE SET NULL
 	ON UPDATE CASCADE
-) 
+);
+
+
+// Pet 
+CREATE TABLE `LOCALE` (
+	`LOCALE_ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`LOCALE_NAME` VARCHAR(16) NULL DEFAULT NULL COMMENT 'Language-Country code (ISO 639-1). For example, \'en-US\' for \'English-Unites States\' \'and ko-KR\' for \'Korean-Korea\'. Please refer to \'ISO_LanguageCode_Table.xlsx\'.' COLLATE 'utf8mb4_unicode_ci',
+	`LOCALE_DESC` VARCHAR(64) NULL DEFAULT NULL COMMENT 'Description' COLLATE 'utf8mb4_unicode_ci',
+	PRIMARY KEY (`LOCALE_ID`) USING BTREE,
+	UNIQUE INDEX `LOCALE_ID_UNIQUE` (`LOCALE_ID`) USING BTREE
+);
+
+CREATE TABLE `SPECIES` (
+  `SPECIES_ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `SPECIES_IDENTIFIER` varchar(32) DEFAULT NULL COMMENT 'This is a key for SPECIES_NAME.',
+  `SPECIES_NAME` varchar(45) DEFAULT NULL ,
+    PRIMARY KEY (`SPECIES_ID`),
+  UNIQUE KEY `SPECIES_ID_UNIQUE` (`SPECIES_ID`)
+) ;
+
+
+CREATE TABLE `SPECIESLOCALE` (
+  `SPECIES_ID` int(10) unsigned NOT NULL,
+  `LOCALE_ID` int(10) unsigned NOT NULL,
+  `SPECIESLOCALE_NAME` varchar(45) DEFAULT NULL COMMENT 'This could be a localized name like a ''Canine(개)'' or ''con chó''',
+  PRIMARY KEY (`SPECIES_ID`, `LOCALE_ID`),
+  KEY `fk_SPECIESLOCALE_SPECIES_ID_idx` (`SPECIES_ID`),
+  KEY `fk_SPECIESLOCALE_LOCALE_ID` (`LOCALE_ID`),
+  CONSTRAINT `fk_SPECIESLOCALE_SPECIES_ID` FOREIGN KEY (`SPECIES_ID`) REFERENCES `SPECIES` (`SPECIES_ID`)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
+  CONSTRAINT `fk_SPECIESLOCALE_LOCALE_ID` FOREIGN KEY (`LOCALE_ID`) REFERENCES `LOCALE` (`LOCALE_ID`)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
+);
+
+CREATE TABLE `BREED` (
+  `BREED_ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `SPECIES_ID` int(10) unsigned NOT NULL,
+  `BREED_NAME` varchar(127) DEFAULT NULL COMMENT 'localized name like a ''삽살개''',
+  `BREED_ENGNAME` varchar(127) DEFAULT NULL COMMENT 'English name',
+  PRIMARY KEY (`BREED_ID`),
+  KEY `fk_BREED_SPECIES_ID_idx` (`SPECIES_ID`),
+  CONSTRAINT `fk_BREED_SPECIES_ID` FOREIGN KEY (`SPECIES_ID`) REFERENCES `SPECIES` (`SPECIES_ID`)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
+);
+
+CREATE TABLE `SEX` (
+  `SEX_ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `SEX_IDENTIFIER` varchar(45) DEFAULT NULL COMMENT 'None, Male, Female, Castrated male, Spayed female',
+  `SEX_NAME` varchar(45) DEFAULT NULL ,
+  PRIMARY KEY (`SEX_ID`),
+  UNIQUE KEY `SEX_ID_UNIQUE` (`SEX_ID`)
+);
+
+CREATE TABLE `SEXLOCALE` (
+  `SEX_ID` int(10) unsigned NOT NULL,
+  `LOCALE_ID` int(10) unsigned NOT NULL,
+  `SEXLOCALE_NAME` varchar(45) DEFAULT NULL COMMENT 'localized name like a ''수컷'' or ''giống đực''',
+  PRIMARY KEY (`SEX_ID`, `LOCALE_ID`),
+  KEY `fk_SEXLOCALE_SEX_ID_idx` (`SEX_ID`),
+  KEY `fk_SEXLOCALE_LOCALE_ID` (`LOCALE_ID`),
+  CONSTRAINT `fk_SEXLOCALE_SEX_ID` FOREIGN KEY (`SEX_ID`) REFERENCES `SEX` (`SEX_ID`)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
+  CONSTRAINT `fk_SEXLOCALE_LOCALE_ID` FOREIGN KEY (`LOCALE_ID`) REFERENCES `LOCALE` (`LOCALE_ID`)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
+);
+
+CREATE TABLE `TAXFREETYPE` (
+  `TAXFREETYPE_ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `TAXFREETYPE_NAME` varchar(127) DEFAULT NULL,
+  PRIMARY KEY (`TAXFREETYPE_ID`)
+ );
+
+CREATE TABLE `pet` (
+  `pet_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `client_id` int(10) unsigned NOT NULL,
+  `pet_serial` int(10) unsigned NOT NULL,
+  `pet_rfid` varchar(64) DEFAULT NULL COMMENT 'Serial number of RFID implanted in the body',
+  `pet_rfidtype` tinyint(4) DEFAULT '0' COMMENT '0 : In Body, 1 : Out Body, 2 : Pendent',
+  `pet_name` varchar(64) DEFAULT NULL,
+  `SPECIES_ID` int(10) unsigned DEFAULT NULL,
+  `pet_breed` varchar(48) DEFAULT NULL,
+  `SEX_ID` int(10) unsigned DEFAULT NULL,
+  `pet_color` varchar(48) DEFAULT NULL COMMENT 'White, White with Black spot, etc...',
+  `pet_birth` date DEFAULT NULL COMMENT 'Date of birth',
+  `pet_staff1` varchar(32) DEFAULT NULL COMMENT 'Chief',
+  `pet_staff2` varchar(32) DEFAULT NULL COMMENT 'Assistant',
+  `pet_refer` varchar(127) DEFAULT NULL COMMENT 'If this patient refered from other hospital, user will be input hospital name here. But, most of users using this as additional notes.',
+  `pet_firstdate` date NOT NULL COMMENT 'first visit',
+  `pet_lastdate` date NOT NULL COMMENT 'last visit',
+  `pet_memo1` text COMMENT 'Plain text of memo',
+  `pet_memo1_encoded` text COMMENT 'Encoded(Formatted) text of memo',
+  `pet_memo2` text,
+  `pet_memo2_encoded` text,
+  `pet_state` tinyint(4) NOT NULL COMMENT '0 : Normal, 1 : Deleted, 2 : Dead, 3 : Adopted',
+  `pet_alert` tinyint(4) DEFAULT '0',
+  `pet_feed` varchar(64) DEFAULT NULL COMMENT 'Staple food',
+  `TAXFREETYPE_ID` int(10) unsigned DEFAULT NULL,
+  `pet_default` tinyint(4) DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_sign_id` int(10) unsigned NULL,
+  `created_sign_name` varchar(32) DEFAULT NULL,
+  `modified_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `modified_sign_id` int(10) unsigned NULL,
+  `modified_sign_name` varchar(32) DEFAULT NULL,
+  `order_idx` int(11) DEFAULT NULL,
+  `HOSPITAL_ID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`pet_id`, `client_id`),
+  UNIQUE KEY `pet_id_UNIQUE` (`pet_id`),
+  KEY `pet_serial_idx` (`pet_serial`),
+  KEY `fk_pet_species_idx` (`SPECIES_ID`),
+  KEY `fk_pet_client_id_idx` (`client_id`),
+  KEY `fk_pet_sex_id_idx` (`SEX_ID`),
+  KEY `fk_pet_TAXFREETYPE_ID_idx` (`TAXFREETYPE_ID`),
+  KEY `fk_pet_created_sign_id_idx` (`created_sign_id`),
+  KEY `fk_pet_modified_sign_id_idx` (`modified_sign_id`),
+  KEY `fk_pet_HOSPITAL_ID_idx` (`HOSPITAL_ID`),
+  CONSTRAINT `fk_pet_HOSPITAL_ID` FOREIGN KEY (`HOSPITAL_ID`) REFERENCES `HOSPITAL` (`HOSPITAL_ID`)
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION,
+  CONSTRAINT `fk_pet_SEX_ID` FOREIGN KEY (`SEX_ID`) REFERENCES `SEX` (`SEX_ID`)
+	ON DELETE SET NULL
+	ON UPDATE CASCADE,
+  CONSTRAINT `fk_pet_SPECIES_ID` FOREIGN KEY (`SPECIES_ID`) REFERENCES `SPECIES` (`SPECIES_ID`)
+	ON DELETE SET NULL
+	ON UPDATE CASCADE,
+  CONSTRAINT `fk_pet_TAXFREETYPE_ID` FOREIGN KEY (`TAXFREETYPE_ID`) REFERENCES `TAXFREETYPE` (`TAXFREETYPE_ID`)
+	ON DELETE SET NULL
+	ON UPDATE CASCADE,
+  CONSTRAINT `fk_pet_client_id` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`)
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION,
+  CONSTRAINT `fk_pet_created_sign_id` FOREIGN KEY (`created_sign_id`) REFERENCES `sign` (`sign_id`)
+	ON DELETE SET NULL
+	ON UPDATE CASCADE,
+  CONSTRAINT `fk_pet_modified_sign_id` FOREIGN KEY (`modified_sign_id`) REFERENCES `sign` (`sign_id`)
+	ON DELETE SET NULL
+	ON UPDATE CASCADE
+);

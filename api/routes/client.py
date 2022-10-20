@@ -1,9 +1,11 @@
 from datetime import datetime
 from typing import List
+from urllib import request
 from loguru import logger
 
 from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.responses import Response
+from fastapi.requests import Request
 from sqlalchemy.orm import Session
 
 from ..database.conn import db
@@ -30,8 +32,48 @@ def read_clients(skip: int = 0, limit: int = 100, db: Session = Depends(db.sessi
 
 
 @router.get("/{client_id}", response_model=schemas.Client)
-async def read_client(id: int, db: Session = Depends(db.session)):
+async def read_client_by_id(id: int, db: Session = Depends(db.session)):
     client = crud.get_client(db, id)
     if client is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Client not found")
+    logger.info("get client before return")
     return client
+
+
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Client)
+def create_client(clientInfo: schemas.Client, request: Request, db: Session = Depends(db.session)):
+#   print(request.url)
+#   print(request.client.host)
+#   print(request.state.user)
+    user = request.state.user
+    clientInfo.created_sign_id = user.sign_id
+    clientInfo.created_sign_name = user.sign_name
+    clientInfo.modified_sign_id = user.sign_id
+    clientInfo.modified_sign_name = user.sign_name
+    clientInfo.hospital_id = user.hospital_id
+
+    new_client = crud.create_client(db, clientInfo)
+    if new_client is None:
+      raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Client insert failed")
+
+    return new_client
+
+@router.put("/", status_code=status.HTTP_202_ACCEPTED, response_model=schemas.Client)
+def modify_client(clientInfo: schemas.Client, request: Request, db: Session = Depends(db.session)):
+    user = request.state.user
+    clientInfo.modified_sign_id = user.sign_id
+    clientInfo.modified_sign_name = user.sign_name
+    clientInfo.hospital_id = user.hospital_id
+
+    client = crud.update_client(db, clientInfo)
+    if client is None:
+      raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Client insert failed")
+
+    return client
+
+@router.delete('/{client_id}', status_code=status.HTTP_204_NO_CONTENT)
+def delete_client(id: int, db: Session = Depends(db.session)):
+    """ Not correct working """
+    return crud.delete_client(db, id)
+
+
