@@ -30,10 +30,9 @@ def read_clients(skip: int = 0, limit: int = 100, db: Session = Depends(db.sessi
     clients = crud.get_clients(db, skip, limit)
     return clients
 
-
 @router.get("/{client_id}", response_model=schemas.Client)
-async def read_client_by_id(id: int, db: Session = Depends(db.session)):
-    client = crud.get_client(db, id)
+async def read_client_by_id(client_id: int, db: Session = Depends(db.session)):
+    client = crud.get_client(db, client_id)
     if client is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Client not found")
     logger.info("get client before return")
@@ -72,8 +71,8 @@ def modify_client(clientInfo: schemas.Client, request: Request, db: Session = De
     return client
 
 @router.delete('/{client_id}', status_code=status.HTTP_204_NO_CONTENT)
-def delete_client(id: int, db: Session = Depends(db.session)):
+def delete_client(client_id: int, db: Session = Depends(db.session)):
     """ Not correct working """
-    return crud.delete_client(db, id)
+    return crud.delete_client(db, client_id)
 
 

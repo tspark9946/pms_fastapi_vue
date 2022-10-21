@@ -2,19 +2,22 @@
   {
     "name": "ClientView",
     "path": "/ClientView",
-    "component": "/mnt/e/workspace/docker/www/pms/front/pages/ClientView.vue",
-    "chunkName": "pages/ClientView"
+    "component": "/root/playground/pms_fastapi_vue/front/pages/ClientView.vue",
+    "chunkName": "pages/ClientView",
+    "_name": "_9f41c168"
   },
   {
     "name": "inspire",
     "path": "/inspire",
-    "component": "/mnt/e/workspace/docker/www/pms/front/pages/inspire.vue",
-    "chunkName": "pages/inspire"
+    "component": "/root/playground/pms_fastapi_vue/front/pages/inspire.vue",
+    "chunkName": "pages/inspire",
+    "_name": "_12c8936e"
   },
   {
     "name": "index",
     "path": "/",
-    "component": "/mnt/e/workspace/docker/www/pms/front/pages/index.vue",
-    "chunkName": "pages/index"
+    "component": "/root/playground/pms_fastapi_vue/front/pages/index.vue",
+    "chunkName": "pages/index",
+    "_name": "_76b21c66"
   }
 ]
