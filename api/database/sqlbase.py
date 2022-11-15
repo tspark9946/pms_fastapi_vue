@@ -11,7 +11,10 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Session
 
-from api.database.conn import db
+# import sys
+# from os import path
+# sys.path.append(path.dirname( path.dirname( path.abspath(__file__) ) ))  # /home/tspark/projects/pms/api 반환
+from .conn import db
 
 """_summary_
 

@@ -11,7 +11,7 @@ from loguru import logger
 
 from api.common.config import conf
 from api.database.conn import db, Base
-from api.routes import index, client, auth, sign
+from api.routes import index, client, auth, sign, pet
 from api.middlewares.token_validator import access_control
 from api.middlewares.trusted_hosts import TrustedHostMiddleware
 from api.common.consts import LOG_DIR
@@ -67,9 +67,10 @@ def create_app():
 
     # 라우터 정의
     app.include_router(index.router)
-    app.include_router(client.router, prefix="/api", dependencies=[Depends(API_KEY_HEADER)])
     app.include_router(auth.router, prefix="/api")
     app.include_router(sign.router, prefix="/api", dependencies=[Depends(API_KEY_HEADER)])
+    app.include_router(client.router, prefix="/api", dependencies=[Depends(API_KEY_HEADER)])
+    app.include_router(pet.router, prefix="/api", dependencies=[Depends(API_KEY_HEADER)])
 
     return app
 

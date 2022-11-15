@@ -2,22 +2,22 @@
   {
     "name": "ClientView",
     "path": "/ClientView",
-    "component": "/root/playground/pms_fastapi_vue/front/pages/ClientView.vue",
+    "component": "/home/tspark/projects/pms/front/pages/ClientView.vue",
     "chunkName": "pages/ClientView",
-    "_name": "_9f41c168"
+    "_name": "_508283d8"
   },
   {
     "name": "inspire",
     "path": "/inspire",
-    "component": "/root/playground/pms_fastapi_vue/front/pages/inspire.vue",
+    "component": "/home/tspark/projects/pms/front/pages/inspire.vue",
     "chunkName": "pages/inspire",
-    "_name": "_12c8936e"
+    "_name": "_3c134b3c"
   },
   {
     "name": "index",
     "path": "/",
-    "component": "/root/playground/pms_fastapi_vue/front/pages/index.vue",
+    "component": "/home/tspark/projects/pms/front/pages/index.vue",
     "chunkName": "pages/index",
-    "_name": "_76b21c66"
+    "_name": "_60cd105a"
   }
 ]

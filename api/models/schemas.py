@@ -1,7 +1,6 @@
 from datetime import datetime, date
 from enum import Enum
 from typing import List, Optional
-
 from pydantic import Field, EmailStr
 from pydantic import BaseModel
 
@@ -99,7 +98,7 @@ class Tel(BaseModel):
 
 
 class Client(BaseModel):
-    client_id: int
+    client_id: int = 0
     client_serial: int
     client_name: str
     client_zip: str = None
@@ -126,10 +125,75 @@ class Client(BaseModel):
     created_sign_name: Optional[str] = None
     modified_sign_id: Optional[int] = None
     modified_sign_name: Optional[str] = None
-    hospital_id: Optional[int] = None
+    hospital_id: int
 
     class Config:
         orm_mode = True
+        
+class Species(BaseModel):
+    species_id: int
+    species_identifier: str
+    
+    class Config:
+        orm_mode = True
+
+class Sex(BaseModel):
+    sex_id: int
+    sex_identifier: str
+    
+    class Config:
+        orm_mode = True
+
+class Taxfreetype(BaseModel):
+    taxfreetype_id: int
+    taxfreetype_name: str
+    
+    class Config:
+        orm_mode = True
+
+class Pet(BaseModel):
+    pet_id: int = 0
+    pet_serial: int
+    client_id: int
+    pet_name: str
+    pet_rfid: Optional[str] = None
+    pet_rfidtype: Optional[int] = 0
+    pet_breed: Optional[str] = None
+    species_id: Optional[int] = None
+    species: Optional[Species] = None
+    sex_id: Optional[int] = None
+    sex: Optional[Sex] = None
+    pet_color: Optional[str] = None
+    pet_birth: Optional[date] = None
+    pet_staff1: Optional[str] = None
+    pet_staff2: Optional[str] = None
+    pet_refer: Optional[str] = None
+    pet_firstdate: Optional[date] = None
+    pet_lastdate: Optional[date] = None
+    pet_alert: Optional[int] = 0
+    pet_feed: Optional[str] = None
+    pet_default: Optional[int] = 0
+    taxfreetype_id: Optional[int] = None
+    taxfreetype: Optional[Taxfreetype] = None
+    pet_memo1: Optional[str] = None
+    pet_memo1_encoded: Optional[str] = None
+    pet_memo2: Optional[str] = None
+    pet_memo2_encoded: Optional[str] = None
+    pet_state: Optional[int] = 0
+    order_idx: Optional[int] = 0
+    created_at: Optional[datetime] = None
+    modified_at: Optional[datetime] = None 
+    created_sign_id: Optional[int] = None
+    created_sign_name: Optional[str] = None
+    modified_sign_id: Optional[int] = None
+    modified_sign_name: Optional[str] = None
+    hospital_id: int
+
+    class Config:
+        orm_mode = True
+
+
+
 
 
 

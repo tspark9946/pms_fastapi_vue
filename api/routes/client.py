@@ -9,7 +9,6 @@ from fastapi.requests import Request
 from sqlalchemy.orm import Session
 
 from ..database.conn import db
-from ..database.dbmodel import Client
 from ..database import crud
 from ..models import schemas
 

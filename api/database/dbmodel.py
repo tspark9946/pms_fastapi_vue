@@ -15,8 +15,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from api.database.conn import Base
-from api.database.sqlbase import BaseMixin
+from .conn import Base
+from .sqlbase import BaseMixin
 
 # table create => Base.metadata.create_all(bind=engine)
 
@@ -81,7 +81,7 @@ class Client(Base, BaseMixin):
     client_etc = Column(String(127), nullable=True)
     client_alert = Column(Integer, default=0)
     rank_id = Column(Integer, ForeignKey('rank.rank_id'))
-    rank = relationship("Rank", back_populates="client")
+    rank = relationship("Rank", backref="client")
     client_firstdate = Column(Date, default=func.now())
     client_debt = Column(DECIMAL(10, 2), default=0.0)
     client_resmoney = Column(DECIMAL(10, 2), default=0.0)
@@ -96,7 +96,8 @@ class Client(Base, BaseMixin):
     modified_sign_id = Column(Integer)
     modified_sign_name = Column(String)
     hospital_id = Column(Integer, ForeignKey('HOSPITAL.hospital_id'))
-    tellist = relationship("Tel", back_populates="client")
+    tellist = relationship("Tel", backref="client")
+    pets = relationship("Pet", back_populates="client")
 
 
 class Rank(Base):
@@ -104,7 +105,6 @@ class Rank(Base):
     rank_id = Column(Integer, primary_key=True, index=True)
     rank_name = Column(String(length=64))
     order_idx = Column(Integer)
-    client = relationship("Client", back_populates="rank")
 
 
 class Tel(Base, BaseMixin):
@@ -122,7 +122,69 @@ class Tel(Base, BaseMixin):
     created_sign_name = Column(String)
     modified_sign_id = Column(Integer)
     modified_sign_name = Column(String)
-    client = relationship("Client", back_populates="tellist")
     hospital_id = Column(Integer, ForeignKey('HOSPITAL.hospital_id'))
 
+    
+# Pet 
+class Species(Base):
+    __tablename__ = "SPECIES"
+    species_id = Column(Integer, primary_key=True, index=True)
+    species_identifier = Column(String)
+    species_name = Column(String)
 
+class Breed(Base):
+    __tablename__ = "BREED"
+    breed_id = Column(Integer, primary_key=True, index=True)
+    breed_name = Column(String)
+    breed_engname = Column(String)
+    species_id = Column(Integer, ForeignKey('SPECIES.species_id'))
+
+class Sex(Base):
+    __tablename__ = "SEX"
+    sex_id = Column(Integer, primary_key=True, index=True)
+    sex_identifier = Column(String)
+    sex_name = Column(String)
+
+class Taxfreetype(Base):
+    __tablename__ = "TAXFREETYPE"
+    taxfreetype_id = Column(Integer, primary_key=True, index=True)
+    taxfreetype_name = Column(String)
+    #pet = relationship("Pet", back_populates="taxfreetype")
+
+class Pet(Base, BaseMixin):
+    __tablename__ = "pet"
+    pet_id = Column(Integer, primary_key=True, index=True)
+    client_id = Column(Integer, ForeignKey('client.client_id'))
+    client = relationship("Client", back_populates="pets")
+    pet_serial = Column(Integer, nullable=False, index=True)
+    pet_rfid = Column(String, nullable=True)
+    pet_rfidtype = Column(Integer, default=0)
+    pet_name = Column(String, default="")
+    species_id = Column(Integer, ForeignKey('SPECIES.species_id'))
+    species = relationship("Species", backref="pet")
+    pet_breed = Column(String, nullable=True)
+    sex_id = Column(Integer, ForeignKey('SEX.sex_id'), nullable=True)
+    sex = relationship("Sex", backref="pet")
+    pet_color = Column(String, nullable=True)
+    pet_birth = Column(Date, nullable=True)
+    pet_staff1 = Column(String, nullable=True)
+    pet_staff2 = Column(String, nullable=True)
+    pet_refer = Column(String, nullable=True)
+    pet_firstdate = Column(Date, nullable=False, default=func.now())
+    pet_lastdate = Column(Date, nullable=False, default=func.now())
+    pet_memo1 = Column(String, nullable=True)
+    pet_memo1_encoded = Column(String, nullable=True)
+    pet_memo2 = Column(String, nullable=True)
+    pet_memo2_encoded = Column(String, nullable=True)
+    pet_state = Column(Integer, default=0)
+    pet_alert = Column(Integer, default=0)
+    pet_feed = Column(String, nullable=True)
+    taxfreetype_id = Column(Integer, ForeignKey('TAXFREETYPE.taxfreetype_id'), nullable=True)
+    taxfreetype = relationship("Taxfreetype", backref="pet")
+    pet_default = Column(Integer, default=0)
+    created_sign_id = Column(Integer, nullable=True)
+    created_sign_name = Column(String, nullable=True)
+    modified_sign_id = Column(Integer, nullable=True)
+    modified_sign_name = Column(String, nullable=True)
+    order_idx = Column(Integer, nullable=True)
+    hospital_id = Column(Integer, ForeignKey('HOSPITAL.hospital_id'))

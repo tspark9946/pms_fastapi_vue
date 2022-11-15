@@ -1,6 +1,5 @@
-from multiprocessing.connection import Client
 from sqlalchemy.orm import Session
-from sqlalchemy import delete
+from sqlalchemy import delete, null
 from fastapi import HTTPException, status
 from . import dbmodel
 from ..models import schemas
@@ -51,7 +50,6 @@ def create_client(db: Session, request: schemas.Client):
         db.rollback()
 
     return new_client
-
 
 def update_client(db: Session, request: schemas.Client):
     client = dbmodel.Client.get(db, client_id=request.client_id)
@@ -105,17 +103,50 @@ def update_client(db: Session, request: schemas.Client):
 
     return client
 
-
 def delete_client(db: Session, client_id: int):
     client = dbmodel.Client.get(client_id=client_id)
     if not client:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Client with id {client_id} not found")
-    dbmodel.Client.filter(db, client_id=client_id).delete()
-    db.commit
+    pet = dbmodel.Pet.filter(client_id=client_id).count()
+    if pet > 0:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Client has own pet, before pet delete")
+    db.query(dbmodel.Client).filter(dbmodel.Client.client_id==client_id).delete()
+    db.commit()
+    
+    # state문을 직접 실행할 경우 아래와 같이 사용
+    # db.execute('delete from client where client_id=%i' % client_id)
+    # db.commit()
     return 'Done'
 
-def delete_client2(db: Session, client_id: int):
-    stmt = delete(dbmodel.Client).where(dbmodel.Client.client_id == client_id)
-    print(stmt)
 
+# Pet Info
+def get_pets(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(dbmodel.Pet).offset(skip).limit(limit).all()
+
+def get_pet(db: Session, pet_id: int):
+    return db.query(dbmodel.Pet).filter(dbmodel.Pet.pet_id==pet_id).first()
+
+def get_pet_by_clinetid(db: Session, client_id: int):
+    return db.query(dbmodel.Pet).filter(dbmodel.Pet.client_id==client_id).all()
+
+def create_pet(db: Session, request: schemas.Pet):
+    try: 
+        new_pet = dbmodel.Pet(client_id=request.client_id, pet_serial=request.pet_serial, pet_rfid=request.pet_rfid, pet_rfidtype=request.pet_rfidtype, pet_name=request.pet_name, \
+            species_id=request.species_id, pet_breed=request.pet_breed, sex_id=request.sex_id, pet_color=request.pet_color, pet_birth=request.pet_birth, pet_staff1=request.pet_staff1, \
+            pet_staff2=request.pet_staff2, pet_refer=request.pet_refer, pet_memo1=request.pet_memo1, pet_memo1_encoded=request.pet_memo1_encoded, pet_memo2=request.pet_memo2, \
+            pet_memo2_encoded=request.pet_memo2_encoded, pet_alert=request.pet_alert, pet_feed=request.pet_feed, taxfreetype_id=request.taxfreetype_id, pet_default=request.pet_default, \
+            created_sign_id=request.created_sign_id, created_sign_name=request.created_sign_name, modified_sign_id=request.modified_sign_id, modified_sign_name=request.modified_sign_name, \
+            hospital_id=request.hospital_id)
+        #new_pet = dbmodel.Pet()
+        db.add(new_pet)
+        db.commit()
+    except:
+        db.rollback()
+        return null
+
+    return new_pet
+
+def update_pet(db: Session, request: schemas.Pet):
+    pass
