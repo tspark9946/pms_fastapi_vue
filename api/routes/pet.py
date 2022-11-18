@@ -75,8 +75,8 @@ def modify_pet(petInfo: schemas.Pet, request: Request, db: Session = Depends(db.
 
     return pet
 
-# @router.delete('/{client_id}', status_code=status.HTTP_204_NO_CONTENT)
-# def delete_client(client_id: int, db: Session = Depends(db.session)):
-#     return crud.delete_client(db, client_id)
+@router.delete('/{pet_id}', status_code=status.HTTP_204_NO_CONTENT)
+def delete_pet(pet_id: int, db: Session = Depends(db.session)):
+    return crud.delete_pet(db, pet_id)
 
 

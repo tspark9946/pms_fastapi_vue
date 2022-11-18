@@ -154,7 +154,7 @@ class Taxfreetype(BaseModel):
 class Pet(BaseModel):
     pet_id: int = 0
     pet_serial: int
-    client_id: int
+    client_id: int = 0
     pet_name: str
     pet_rfid: Optional[str] = None
     pet_rfidtype: Optional[int] = 0
@@ -187,7 +187,7 @@ class Pet(BaseModel):
     created_sign_name: Optional[str] = None
     modified_sign_id: Optional[int] = None
     modified_sign_name: Optional[str] = None
-    hospital_id: int
+    hospital_id: int = 0
 
     class Config:
         orm_mode = True

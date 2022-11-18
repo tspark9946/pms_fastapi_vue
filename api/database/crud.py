@@ -10,7 +10,7 @@ def create_user(db: Session, hospital_id:int, request: schemas.User):
 
     hospital = dbmodel.Hospital.get(hospital_id=hospital_id)
     if not hospital:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Hospital not exists")
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Hospital not exists")
 
     hashedPassword = Hash.bcrypt(request.sign_password)
     new_user = dbmodel.User.create \
@@ -149,4 +149,50 @@ def create_pet(db: Session, request: schemas.Pet):
     return new_pet
 
 def update_pet(db: Session, request: schemas.Pet):
-    pass
+    pet = dbmodel.Pet.get(db, pet_id=request.pet_id)
+    if not pet:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Pet(id={request.pet_id} not found")
+    try:
+        pet.pet_name = request.pet_name
+        pet.pet_serial = request.pet_serial
+        pet.pet_rfid = request.pet_rfid        
+        pet.pet_rfidtype = request.pet_rfidtype
+        pet.species_id = request.species_id
+        pet.pet_breed = request.pet_breed
+        pet.sex_id = request.sex_id
+        pet.pet_color = request.pet_name
+        pet.pet_birth = request.pet_birth
+        pet.pet_staff1 = request.pet_staff1
+        pet.pet_staff2 = request.pet_staff2
+        pet.pet_refer = request.pet_refer
+        pet.pet_alert = request.pet_alert
+        pet.pet_feed = request.pet_feed
+        pet.pet_default = request.pet_default
+        pet.taxfreetype_id = request.taxfreetype_id
+        pet.pet_state = request.pet_state
+        pet.order_idx = request.order_idx
+        pet.pet_memo1=request.pet_memo1
+        pet.pet_memo1_encoded=request.pet_memo1_encoded
+        pet.pet_memo2=request.pet_memo2
+        pet.pet_memo2_encoded=request.pet_memo2_encoded
+        pet.modified_sign_id=request.modified_sign_id
+        pet.modified_sign_name=request.modified_sign_name
+
+        db.commit()
+    except:
+        db.rollback()
+
+    return pet
+
+
+def delete_pet(db: Session, pet_id: int):
+    pet = dbmodel.Pet.get(pet_id=pet_id)
+    if not pet:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Pet(id={pet_id} not found")
+    db.query(dbmodel.Pet).filter(dbmodel.Pet.pet_id==pet_id).delete()
+    db.commit()
+    
+    return 'Done'
+

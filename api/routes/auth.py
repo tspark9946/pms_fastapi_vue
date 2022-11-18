@@ -37,7 +37,8 @@ async def login(request: schemas.Login):
   if not user:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid Credentials(NO_MATCH_USER)")
   if not Hash.verify(request.sign_password, user.sign_password):
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Incorrect password")
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Incorrect password")
+  status.HTTP_422_UNPROCESSABLE_ENTITY
 
   token = dict(Authorization=f"Bearer {create_access_token(data=schemas.UserToken.from_orm(user).dict(exclude={'sign_password'}))}")
   return token

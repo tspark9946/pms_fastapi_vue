@@ -1,23 +1,23 @@
 [
   {
-    "name": "ClientView",
-    "path": "/ClientView",
-    "component": "/home/tspark/projects/pms/front/pages/ClientView.vue",
-    "chunkName": "pages/ClientView",
-    "_name": "_508283d8"
-  },
-  {
     "name": "inspire",
     "path": "/inspire",
-    "component": "/home/tspark/projects/pms/front/pages/inspire.vue",
-    "chunkName": "pages/inspire",
-    "_name": "_3c134b3c"
+    "component": "/home/tspark/projects/pms/front/views/pages/inspire.vue",
+    "chunkName": "views/pages/inspire",
+    "_name": "_76f8fe7e"
+  },
+  {
+    "name": "login",
+    "path": "/login",
+    "component": "/home/tspark/projects/pms/front/views/pages/login.vue",
+    "chunkName": "views/pages/login",
+    "_name": "_4c85e590"
   },
   {
     "name": "index",
     "path": "/",
-    "component": "/home/tspark/projects/pms/front/pages/index.vue",
-    "chunkName": "pages/index",
-    "_name": "_60cd105a"
+    "component": "/home/tspark/projects/pms/front/views/pages/index.vue",
+    "chunkName": "views/pages/index",
+    "_name": "_fa437b0e"
   }
 ]
