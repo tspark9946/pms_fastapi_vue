@@ -1,22 +1,11 @@
 import http from './http'
 
-let store
-export function init (context) {
-  store = context.store
-}
-
-export async function login (email, password) {
-  const loginData = {
-    sign_email: email,
-    sign_password: password
-  }
-  const response = await http.post('/api/auth/login', loginData)
-
-  if (response.status === 200) {
-    store.commit('auth/setToken', response.data.Authorization)
-  }
-
-  return response
+// loginData: {
+//   sign_email: '',
+//   sign_password: ''
+// }
+export function login (loginData) {
+  return http.post('/api/auth/login', loginData)
 }
 
 export async function testRequest () {

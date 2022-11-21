@@ -54,7 +54,6 @@
 </template>
 
 <script>
-import * as authApi from '@/api/auth'
 
 export default {
   name: 'LoginPage',
@@ -67,14 +66,7 @@ export default {
   }),
   methods: {
     requestLogin () {
-      console.log(this.loginData.sign_email)
-      console.log(this.loginData.sign_password)
-      authApi.login(this.loginData.sign_email, this.loginData.sign_password)
-        .then((response) => {
-          // this.$store.commit('auth/setToken', response.data.Authorization)
-          console.log(response.data.Authorization)
-        })
-        .catch(e => console.error(e))
+      this.$store.dispatch('auth/login', this.loginData)
     }
   }
 

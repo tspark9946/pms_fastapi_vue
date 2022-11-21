@@ -23,4 +23,19 @@ instance.interceptors.request.use(function (config) {
   return config
 })
 
+instance.interceptors.response.use(function (response) {
+  store.commit('error/setValidationError', {})
+
+  return response
+}, function (errors) {
+  console.log(errors.response)
+  console.log(errors.response.status)
+  const status = Number(errors.response.status)
+  if (status === 422) {
+    store.commit('error/setValidationError', errors.response.data.detail)
+  } else {
+    return Promise.reject(errors)
+  }
+})
+
 export default instance
