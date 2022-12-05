@@ -66,6 +66,9 @@ export default {
   }),
   methods: {
     requestLogin () {
+      for (let i = 0; i <= 10; i++) {
+        console.log('test')
+      }
       this.$store.dispatch('auth/login', this.loginData)
     }
   }

@@ -7,6 +7,11 @@
         class="mb-5"
       >
       <v-card>
+        <fa icon="download" size="lg" :style="{ color: 'red'}" />
+        <fa :icon="['fas', 'download']" />
+        <fa :icon="['far', 'star']" />
+        <fa :icon="['fab', 'twitter']" />
+
         <v-btn
           color="blue lighten-1 text-capitalize"
           depressed

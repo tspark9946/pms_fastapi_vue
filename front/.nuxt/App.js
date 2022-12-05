@@ -6,7 +6,9 @@ import NuxtError from '../views/layouts/error.vue'
 import NuxtLoading from './components/nuxt-loading.vue'
 import NuxtBuildIndicator from './components/nuxt-build-indicator'
 
-import '../node_modules/vuetify/dist/vuetify.css'
+import '../node_modules/@fortawesome/fontawesome-svg-core/styles.css'
+
+import '../assets/scss/style.scss'
 
 import _6f6c098b from '../views/layouts/default.vue'
 

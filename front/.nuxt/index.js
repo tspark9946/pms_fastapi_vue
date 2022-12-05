@@ -16,6 +16,7 @@ import { createStore } from './store.js'
 import nuxt_plugin_plugin_6fd15fee from 'nuxt_plugin_plugin_6fd15fee' // Source: ./components/plugin.js (mode: 'all')
 import nuxt_plugin_plugin_b804ca80 from 'nuxt_plugin_plugin_b804ca80' // Source: ./vuetify/plugin.js (mode: 'all')
 import nuxt_plugin_axios_6cfcfff8 from 'nuxt_plugin_axios_6cfcfff8' // Source: ./axios.js (mode: 'all')
+import nuxt_plugin_fontawesome_7b9f7f74 from 'nuxt_plugin_fontawesome_7b9f7f74' // Source: ./fontawesome.js (mode: 'all')
 import nuxt_plugin_httpInit_29b8b9a4 from 'nuxt_plugin_httpInit_29b8b9a4' // Source: ../plugins/httpInit (mode: 'all')
 
 // Component: <ClientOnly>
@@ -84,7 +85,7 @@ async function createApp(ssrContext, config = {}) {
   // here we inject the router and store to all child components,
   // making them available everywhere as `this.$router` and `this.$store`.
   const app = {
-    head: {"titleTemplate":"%s - front","title":"front","htmlAttrs":{"lang":"en"},"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":""},{"name":"format-detection","content":"telephone=no"}],"link":[{"rel":"icon","type":"image\u002Fx-icon","href":"\u002Ffavicon.ico"},{"rel":"stylesheet","type":"text\u002Fcss","href":"https:\u002F\u002Ffonts.googleapis.com\u002Fcss?family=Roboto:100,300,400,500,700,900&display=swap"},{"rel":"stylesheet","type":"text\u002Fcss","href":"https:\u002F\u002Fcdn.jsdelivr.net\u002Fnpm\u002F@mdi\u002Ffont@latest\u002Fcss\u002Fmaterialdesignicons.min.css"}],"style":[],"script":[]},
+    head: {"titleTemplate":"%s - front","title":"PMS for Veterinary","htmlAttrs":{"lang":"en"},"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":""},{"name":"format-detection","content":"telephone=no"}],"link":[{"rel":"icon","type":"image\u002Fx-icon","href":"\u002Ffavicon.ico"},{"rel":"stylesheet","type":"text\u002Fcss","href":"https:\u002F\u002Ffonts.googleapis.com\u002Fcss?family=Roboto:100,300,400,500,700,900&display=swap"},{"rel":"stylesheet","type":"text\u002Fcss","href":"https:\u002F\u002Fcdn.jsdelivr.net\u002Fnpm\u002F@mdi\u002Ffont@latest\u002Fcss\u002Fmaterialdesignicons.min.css"}],"style":[],"script":[]},
 
     store,
     router,
@@ -223,6 +224,10 @@ async function createApp(ssrContext, config = {}) {
 
   if (typeof nuxt_plugin_axios_6cfcfff8 === 'function') {
     await nuxt_plugin_axios_6cfcfff8(app.context, inject)
+  }
+
+  if (typeof nuxt_plugin_fontawesome_7b9f7f74 === 'function') {
+    await nuxt_plugin_fontawesome_7b9f7f74(app.context, inject)
   }
 
   if (typeof nuxt_plugin_httpInit_29b8b9a4 === 'function') {

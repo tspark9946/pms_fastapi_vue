@@ -4,6 +4,7 @@ import axios from 'axios'
 // 1. 선두에 init function 추가
 // 2. plugins 폴더에 init.js 파일 생성
 // 3. nuxt.config.js -> plugins에 init.js 추가
+// 참고영상 : youtube 개발레시피 vue axios
 let store
 export function init (context) {
   store = context.store
